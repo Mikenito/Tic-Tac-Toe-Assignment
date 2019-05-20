@@ -52,34 +52,14 @@ print(data['bottom-right-square'].value_counts())
 print('')
 	
 	
-
+#define target class positive and negative probabilities
 pos_prob = float(625)/float(957)	
 	
 neg_prob = float(332)/float(957)	
 
-def entropy_targetClass():
-    '''
-    return the Entropy of the target class of outcomes:
-    '''
-    return float(0) - (pos_prob*np.log2(pos_prob) + neg_prob*np.log2(neg_prob))
 
 
-
-
-try:
-	#data has to be processed since the predictor only takes in floats
-	le = preprocessing.LabelEncoder()
-	processed_data = data.apply(le.fit_transform)
-
-except ValueError, e:
-	print('processing error : ', e)
-	
-
-#define your X's and Y's	
-X = processed_data.values[:, 0:9]
-Y = processed_data.values[:,9]
-
-
+#define your values for positive and negative outcomes given your focussing on a certain feature
 top_left_posX_count = 0
 top_left_negX_count = 0
 top_left_posO_count = 0
@@ -146,6 +126,7 @@ bottom_right_negB_count = 0
 
 
 
+#define your features (columns)
 
 top_left = data.values[:, 0]
 top_middle = data.values[:, 1]
@@ -161,9 +142,11 @@ bottom_right = data.values[:, 8]
 
 outcomes = data.values[:, 9]
 
+#used in the while loop
 iterator = 0
 
 
+#counts the pos and neg's for each feature element
 while iterator < 957:
 	
 	#The X's
@@ -431,6 +414,17 @@ print( 'bottom right negB count :: ' , bottom_right_negB_count)
 print('')
 
 
+def entropy_targetClass():
+    '''
+    return the Entropy of the target class of outcomes:
+    '''
+    return float(0) - (pos_prob*np.log2(pos_prob) + neg_prob*np.log2(neg_prob))
+
+
+
+	
+
+
 '''
 Gain(D, top_left) where features are x, o and b
 
@@ -540,24 +534,10 @@ def gain_bottom_middle():
 	return gain
 
 
-
+#define your gain array
 gain_array = [gain_top_left(), gain_top_middle(), gain_top_right(), gain_middle_left(), gain_middle_middle(), gain_middle_right(), gain_bottom_left(), gain_bottom_middle(), gain_bottom_right()]
-#define X and Y training and testing data
-X_train, X_test, y_train, y_test = train_test_split( X, Y, test_size = 0.4, random_state = 100)
 
 
-#print out training and testing data
-'''
-	print("X_train :: ", X_train)
-	print('')
-	print("Y_train :: ", y_train)
-	print('')
-	print("X_test :: ", X_test)
-	print('')
-	print("Y_test :: ", y_test)
-	print('') 
-	'''
-	
 try:
 	print('Probabilty for positive in the target class "outcome" :: ', pos_prob)
 	print('')
@@ -569,10 +549,39 @@ except ValueError, e:
 	print("Can't print up the probabilities because :: ", e);	
 
 try:
-	print(gain_array)
+	print('Top Left gain :: ', gain_array[0])
+	print('Top Middle gain :: ', gain_array[1])
+	print('Top Right gain :: ', gain_array[2])
+	print('Middle Left gain :: ', gain_array[3])
+	print('Middle Middle gain :: ', gain_array[4])
+	print('Middle Right gain :: ', gain_array[5])
+	print('Bottom Left gain :: ', gain_array[6])
+	print('Bottom Middle gain :: ', gain_array[7])
+	print('Bottom Right gain :: ', gain_array[8])
 	print()
 except ValueError, e:
 	print(e)	
+
+
+
+try:
+	#data has to be processed since the predictor only takes in floats
+	le = preprocessing.LabelEncoder()
+	processed_data = data.apply(le.fit_transform)
+
+except ValueError, e:
+	print('processing error : ', e)
+
+#define your X's and Y's	
+X = processed_data.values[:, 0:9]
+Y = processed_data.values[:,9]
+
+#define X and Y training and testing data
+X_train, X_test, y_train, y_test = train_test_split( X, Y, test_size = 0.4, random_state = 100)
+
+
+
+#now for some cool stuff
 
 '''
 
