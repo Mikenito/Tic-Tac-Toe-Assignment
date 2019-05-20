@@ -103,7 +103,7 @@ negXCondProb = calProbs()[3]
 negOCondProb = calProbs()[4]
 negBCondProb = calProbs()[5]
 
-def predictClass(X_test):
+def predictClass(X_train):
 	y,z = 0,0
 	while z < len(X_test) and y<len(Y_test):
 		posProduct = 1
