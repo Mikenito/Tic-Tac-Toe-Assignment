@@ -129,8 +129,8 @@ def predictClass(X_test):
 				negProduct*= negBCondProb[i][1]
 		print("Line number: ", z)
 		if posProduct > negProduct:
-			print("Win for X")
-		else: print("Lose for X")
+			print("Lose for X")
+		else: print("Win for X")
 		# print("Product of positive A|positive",posProduct)
 		# print("Product of negative A|negative",negProduct)
 			# print(posProduct)
