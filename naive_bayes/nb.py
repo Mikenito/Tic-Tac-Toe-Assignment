@@ -19,10 +19,7 @@ le = preprocessing.LabelEncoder()
 for col in df.columns:
 	df[col] = le.fit_transform(df[col])
 
-# for col in df.columns:				#returns 0's in the positions of x's and o's
-# 	df[col] = pd.get_dummies(df[col]) 	#returns 1's in the positions of b's
-
-features = (list(df.columns[:])) #does ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']
+features = (list(df.columns[:-1])) #does ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']
 
 X = df[features]
 Y = df['Class']
@@ -33,10 +30,9 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.4, random_
 print("Length of features", len(features)) #length of features
 print("Length of X_train dataset", len(X_train))
 print("Length of X_test dataset", len(X_test))
-print('Training Data')
-print(X_train[0:5].loc[:,"A1":"Class"]) #prints attribute values
+# print('Training Data')
+# print(X_train[0:5].loc[:,"A1":"Class"]) #prints attribute values
 # print(Y_train[0:5]) #Prints the class values
-# print('Element at position row,col :',X_train.iat[0, 8]) #for testing
 
 #Calculate Conditional Probabililities 
 def calProbs():
@@ -59,7 +55,7 @@ def calProbs():
 	# print(posPriorProb, negPriorPorb)
 	# print(posCount, negCount)
 	z=0
-	while z < (len(features)-1):
+	while z < len(features):
 		negxcount, posxcount = 0,0
 		negocount, posocount = 0,0
 		negbcount, posbcount = 0,0
@@ -93,8 +89,9 @@ def calProbs():
 	# print("b|neg Conditional Probabilities: ",negbCondProbs)
 	return [posxCondProbs,posoCondProbs,posbCondProbs, negxCondProbs,negoCondProbs, negbCondProbs]
 
-print("Testing Data")
-print(X_test.loc[:,'A1':'Class'])
+# print("Testing Data")
+# print(X_test.loc[:,'A1':'Class'])
+
 #storing conditional probabilities in global arrays
 posXCondProb = calProbs()[0]
 posOCondProb = calProbs()[1]
@@ -108,7 +105,7 @@ def predictClass(X_train):
 	while z < len(X_test) and y<len(Y_test):
 		posProduct = 1
 		negProduct = 1
-		for i in range(0,(len(features)-1)):
+		for i in range(0,len(features)):
 			if X_test.iat[z,i] == 2 and Y_test.iat[y] == 1:
 				# print(posXCondProb[i][1])
 				posProduct *= posXCondProb[i][1]
@@ -138,11 +135,26 @@ def predictClass(X_train):
 		z+=1
 		y+=1
 
+#Standard Naive Bayes Classifier
+print('The implemented Naive Bayes Classifier: ')
+print('Class: ')
 predictClass(X_test)
-# print("Naive Bayes")
-# nb = BernoulliNB()
-# clf_nb = nb.fit(X_train, Y_train)
 
-# print('Class: ', clf_nb.predict(X_test))
-# print('Accuracy: ', clf_nb.score(X_test, Y_test))
-# print(X_train, Y_train) #(574, 9) (574,) tells us the number of test data - 574 data points
+#SKlearn built in method for naive bayes
+print("\nBernoulli Naive Bayes Classifier: ")
+nb = BernoulliNB()
+clf_nb = nb.fit(X_train, Y_train)
+
+print('Class: ', clf_nb.predict(X_test))
+print('Accuracy: ', clf_nb.score(X_test, Y_test))
+print('Number of test dataset ',X_test.shape, Y_test.shape) #(574, 9) (574,) tells us the number of test data - 574 data points
+
+#SKlean built in method for GNB
+from sklearn.naive_bayes import GaussianNB
+print('\nGaussian Naive Bayes Classifier: ')
+gnb = GaussianNB()
+y_pred = gnb.fit(X_train, Y_train)
+
+print('Class: ', gnb.predict(X_test))
+print('Accuracy: ', gnb.score(X_test, Y_test))
+print('Number of test dataset: ', X_test.shape, Y_test.shape)
